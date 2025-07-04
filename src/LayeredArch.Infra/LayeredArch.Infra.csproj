@@ -1,0 +1,19 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Identity" Version="2.3.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\LayeredArch.Business\LayeredArch.Business.csproj" />
+    <ProjectReference Include="..\LayeredArch.Data\LayeredArch.Data.csproj" />
+    <ProjectReference Include="..\LayeredArch.Helper\LayeredArch.Helper.csproj" />
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,36 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Azure.Storage.Blobs" Version="12.23.0" />
+		<PackageReference Include="Dapper" Version="2.1.66" />
+		<PackageReference Include="HtmlAgilityPack" Version="1.11.72" />
+		<PackageReference Include="Microsoft.AspNetCore.Html.Abstractions" Version="2.3.0" />
+		<PackageReference Include="Microsoft.AspNetCore.Identity" Version="2.3.1" />
+		<PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="9.0.0" />
+		<PackageReference Include="Microsoft.AspNetCore.Authentication.Negotiate" Version="9.0.6" />
+		<PackageReference Include="Microsoft.Extensions.Hosting" Version="9.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="9.0.0" />
+		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+		<PackageReference Include="automapper.extensions.Microsoft.dependencyinjection" Version="12.0.1" />
+		<PackageReference Include="IdentityModel" Version="7.0.0" />
+		<PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="9.0.0" />
+		<PackageReference Include="RestClient" Version="3.1024.23771" />
+		<PackageReference Include="RestSharp" Version="112.1.0" />
+		<PackageReference Include="System.DirectoryServices.AccountManagement" Version="9.0.4" />
+		<PackageReference Include="Microsoft.AspNetCore.Authentication.Negotiate" Version="9.0.6" />
+
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\LayeredArch.Business\LayeredArch.Business.csproj" />
+	  <ProjectReference Include="..\LayeredArch.Data\LayeredArch.Data.csproj" />
+	  <ProjectReference Include="..\LayeredArch.Helper\LayeredArch.Helper.csproj" />
+	  <ProjectReference Include="..\LayeredArch.Infra\LayeredArch.Infra.csproj" />
+	</ItemGroup>
+
+</Project>

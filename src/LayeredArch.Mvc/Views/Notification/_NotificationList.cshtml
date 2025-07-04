@@ -1,0 +1,26 @@
+﻿@using LayeredArch.Mvc.ViewModels.Shareds
+@model IEnumerable<AuditLogViewModel>
+
+@foreach (var log in Model)
+{
+    var cssClass = log.LogType switch
+    {
+        1 => "notification-item notification-info",
+        2 => "notification-item notification-warning",
+        3 => "notification-item notification-error",
+        _ => "notification-item notification-info"
+    };
+
+    var iconClass = log.LogType switch
+    {
+        1 => "fas fa-info-circle",
+        2 => "fas fa-exclamation-triangle",
+        3 => "fas fa-times-circle",
+        _ => "fas fa-info-circle"
+    };
+
+    <div class="@cssClass">
+        <i class="@iconClass"></i>
+        @log.Message
+    </div>
+}

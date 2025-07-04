@@ -1,0 +1,71 @@
+﻿@model ClaimViewModel
+
+@{
+    ViewData["Title"] = "Nova declaração";
+    Layout = null;
+}
+
+<div class="container">
+    <form id="CreateForm" enctype="multipart/form-data">
+        <div class="row">
+            <!-- Name Field -->
+            <div class="col-md-8">
+                <div class="mb-3">
+                    <label asp-for="Name" class="form-label"></label>
+                    <input asp-for="Name" class="form-control" />
+                    <div class="invalid-feedback">
+                        <span asp-validation-for="Name"></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Module Selection box-->
+            <div class="col-md-4">
+                <label asp-for="ModuleId" class="form-label">Módulo</label>
+                @if (Model.ModuleSelect.Any())
+                {
+
+                    <select asp-for="ModuleId"
+                            class="form-select"
+                            asp-items="@(new SelectList(Model.ModuleSelect,"Id","Name"))">
+                        <option value="">Selecione</option>
+                    </select>
+
+                }
+                else
+                {
+                    <p class="text-danger">Não existem módulos!</p>
+                }
+                <span asp-validation-for="ModuleId" class="text-danger"></span>
+            </div>
+
+            <!-- Description Field -->
+            <div class="mb-3">
+                <label asp-for="Description" class="form-label"></label>
+                <textarea asp-for="Description" class="form-control" rows="3"></textarea>
+                <div class="invalid-feedback">
+                    <span asp-validation-for="Description"></span>
+                </div>
+            </div>
+
+            <!-- Tag Field -->
+            <div class="col-md-12">
+                <div class="mb-3">
+                    <label asp-for="Tag" class="form-label"></label>
+                    <input asp-for="Tag" class="form-control" />
+                    <div class="invalid-feedback">
+                        <span asp-validation-for="Tag"></span>
+                    </div>
+                </div>
+            </div>
+
+            <input type="checkbox" asp-for="Activated" class="form-check-input" checked hidden />
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

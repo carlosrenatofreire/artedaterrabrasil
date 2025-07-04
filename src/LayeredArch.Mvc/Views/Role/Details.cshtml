@@ -1,0 +1,113 @@
+﻿@model RoleViewModel
+
+@{
+    ViewData["Title"] = "Detalhe do Peril";
+    Layout = null;
+}
+
+<div>
+    <h4>Informação somente leitura</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Description)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Description)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Tag)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Tag)
+        </dd>
+        <dt class="col-sm-2">
+            Departamento
+        </dt>
+        <dd class="col-sm-10">
+           @*  @Html.DisplayFor(model => model.Department.Name) *@
+        </dd>
+
+@*         @if(Model.AreaId != null)
+        {
+            <dt class="col-sm-2">
+                Área
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Area.Name)
+            </dd>
+        }
+
+        @if (Model.TeamId != null)
+        {
+            <dt class="col-sm-2">
+                Equipa
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Team.Name)
+            </dd>
+        } *@
+
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Activated)
+        </dt>
+        <dd class="col-sm-10">
+            @if (Model.Activated)
+            {
+                <span class="badge bg-success">Sim</span>
+            }
+            else
+            {
+                <span class="badge bg-danger">Não</span>
+            }
+        </dd>
+    </dl>
+</div>
+
+<hr />
+<h4>Utilizadores</h4>
+
+
+@if (Model.Users != null && Model.Users.Any())
+
+{
+    <table class="table table-hover">
+        <thead class="thead-dark">
+            <tr>
+                <th>@Html.DisplayNameFor(model => model.Users.First().Name)</th>
+                <th>@Html.DisplayNameFor(model => model.Users.First().Email)</th>
+                <th>@Html.DisplayNameFor(model => model.Users.First().Activated)</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var user in Model.Users)
+            {
+                <tr>
+                    <td>@user.Name</td>
+                    <td>@user.Email</td>
+                    <td>
+                        @if (user.Activated)
+                        {
+                            <span class="badge bg-success">Sim</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-danger">Não</span>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p class="text-danger">Não existe nenhum utilizador com este cargo.</p>
+}
+

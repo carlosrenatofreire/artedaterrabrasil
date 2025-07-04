@@ -1,0 +1,47 @@
+﻿@using LayeredArch.Mvc.ViewModels.Entities
+@model UserViewModel
+
+@{
+    ViewData["Title"] = "Editar utilizador";
+    Layout = null;
+}
+
+<input type="hidden" asp-for="Id" />
+<form id="EditForm" enctype="multipart/form-data">
+    <div class="row g-3 mb-3">
+
+        <div class="col-md-6">
+            <label asp-for="Name" class="form-label"></label>
+            <input asp-for="Name" type="text" class="form-control" required />
+            <span asp-validation-for="Name" class="text-danger"></span>
+        </div>
+
+        <div class="col-md-6">
+            <label asp-for="ChangedDate" class="form-label"></label>
+            <input asp-for="ChangedDate" type="text" class="form-control" required />
+            <span asp-validation-for="ChangedDate" class="text-danger"></span>
+        </div>
+
+        <div class="col-md-6">
+            <label asp-for="Email" class="form-label"></label>
+            <input asp-for="Email" type="text" class="form-control" />
+            <span asp-validation-for="Email" class="text-danger"></span>
+        </div>
+
+        <div class="col-md-6">
+            <label asp-for="RoleId" class="form-label">Perfil</label>
+                <select asp-for="RoleId" class="form-select" asp-items="@(new SelectList(Model.RoleSelect, "Id", "Name"))">
+                </select>
+            <span asp-validation-for="RoleId" class="text-danger"></span>
+        </div>
+    </div>
+</form>
+
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+}
