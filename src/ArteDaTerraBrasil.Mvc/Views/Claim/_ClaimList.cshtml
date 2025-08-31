@@ -1,0 +1,84 @@
+﻿@using ArteDaTerraBrasil.Mvc.ViewModels.Parameters
+@model IEnumerable<ClaimViewModel>
+
+<table id="Table" class="table table-bordered table-striped table-hover table-sm">
+    <thead class="bg-dark text-white">
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Description)
+            </th>
+            <th>
+                Módulo
+            </th>
+            <th style="width:5%">
+                @Html.DisplayNameFor(model => model.Activated)
+            </th>
+            <th style="width:5%"></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(model => item.Description)
+                </td>
+                <td>
+                    @Html.DisplayFor(model => item.Module.Name)
+                </td>
+                <td class="justify-content-center text-center">
+                    @if (item.Activated)
+                    {
+                        <span class="badge bg-success">Sim</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-danger">Não</span>
+                    }
+                </td>
+                <td class="text-center">
+                    <div class="btn-group">
+                        <button class="btn btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <span class="fa fa-ellipsis-h"></span>
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li><h6 class="dropdown-header">Ações</h6></li>
+                            <li>
+                                <a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#detailsModal" data-action="open-details" data-id="@item.Id">
+                                    <span class="fa fa-search"></span> Detalhes
+                                </a>
+                            </li>
+                            <li supress-by-module-tag="permission" supress-by-claim-tag="editar">
+                                <a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#editModal" data-action="open-edit" data-id="@item.Id">
+                                    <span class="fa fa-pencil-alt"></span> Editar
+                                </a>
+                            </li>
+                            @if (item.Activated)
+                            {
+                                <li supress-by-module-tag="permission" supress-by-claim-tag="deletar">
+                                    <a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#delete" data-id="@item.Id" data-name="@item.Name">
+                                        <span class="fa fa-trash"></span> Apagar
+                                    </a>
+                                </li>
+                            }
+                            else
+                            {
+                                <li supress-by-module-tag="permission" supress-by-claim-tag="deletar">
+                                    <a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#activate" data-id="@item.Id" data-name="@item.Name">
+                                        <span class="fa fa-check"></span> Ativar
+                                    </a>
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

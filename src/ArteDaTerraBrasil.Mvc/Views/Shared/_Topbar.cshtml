@@ -1,0 +1,112 @@
+﻿@using System.Security.Principal
+@using System.Security.Claims
+@using Microsoft.AspNetCore.Authentication
+
+@{
+
+    var userEmail = User.FindFirst(ClaimTypes.Email)?.Value;
+    var userName = User.FindFirst(ClaimTypes.Name)?.Value;
+    var currentPath = Context.Request.Path.ToString();
+
+}
+
+<!-- Topbar -->
+<div class="topbar" id="topbar">
+    <div>
+        <div class="d-flex align-items-center gap-2 p-0 m-0">
+            <img src="~/images/grupo-jap-white.png" alt="Grupo Jap Logo" width="80" height="30" />
+        </div>
+    </div>
+
+    <h5 class="m-0 fw-normal"><b>@userName</b>, seja bem-vindo !!!</h5>
+
+    <div class="right-icons">
+        <div id="notification-toggle"><i class="fa fa-bell"></i></div>
+        <div><i class="fa fa-sun" id="mode-toggle"></i></div>
+
+        <!-- Avatar -->
+        <img class="avatar" src="~/images/thumbnail.png" alt="Avatar" id="user-avatar" />
+
+        <div>
+            <form id="logoutForm" method="post" asp-controller="Account" asp-action="Logout">
+                <button type="submit" class="btn btn-warning"><i class="fas fa-sign-out-alt"></i> Logout</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- User Panel -->
+<div class="notification-panel" id="user-panel">
+
+    <div class="notification-header">
+        <span><strong>Perfil de Utilizador</strong></span>
+        <button id="user-close" style="background: none; border: none; font-size: 16px; cursor: pointer;">✖</button>
+    </div>
+
+    <div class="notification-body">
+        <div class="d-flex align-items-center mb-3">
+            <img class="avatar rounded-circle mb-3" src="~/images/thumbnail.png" alt="Avatar" id="user-avatar" style="width: 80px; height: 80px;">
+            <div>
+                <h6 class="mb-1">@userName</h6>
+                <small class="mb-0">@userEmail</small>
+            </div>
+        </div>
+
+        <div class="user-info">
+            <div class="mb-2"><strong>ID:</strong> X</div>
+
+            <div class="mb-2"><strong>Função:</strong>Y</div>
+
+            <div class="mb-2"><strong>Manager:</strong>Z</div>
+        </div>
+    </div>
+
+</div>
+
+<!-- Notification panel -->
+<div class="notification-panel" id="notification-panel">
+    <div class="notification-header">
+        <span><strong>Notificações</strong></span>
+        <button id="notification-close" style="background: none; border: none; font-size: 16px; cursor: pointer;">✖</button>
+    </div>
+
+    <!-- Filtros -->
+    <div class="notification-filters">
+        <button class="filter-btn active" data-type="all">Tudo</button>
+        <button class="filter-btn" data-type="info">Infos</button>
+        <button class="filter-btn" data-type="warning">Alertas</button>
+        <button class="filter-btn" data-type="error">Erros</button>
+    </div>
+
+    <div class="notification-body" id="notification-body">
+
+
+
+    </div>
+</div>
+
+<!-- SweetAlert para logout -->
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const logoutForm = document.getElementById('logoutForm');
+
+        logoutForm.addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            Swal.fire({
+                title: 'Tem certeza?',
+                text: "Deseja mesmo terminar a sessão?",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Sim, terminar sessão',
+                cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    logoutForm.submit();
+                }
+            });
+        });
+    });
+</script>

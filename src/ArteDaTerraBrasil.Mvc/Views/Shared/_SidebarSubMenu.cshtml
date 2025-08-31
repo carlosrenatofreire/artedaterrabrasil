@@ -1,0 +1,113 @@
+﻿@{
+    var currentPath = Context.Request.Path.ToString();
+    var hasSubmenu =
+        currentPath.Contains("/User-List") ||
+        currentPath.Contains("/Role-List") ||
+        currentPath.Contains("/Module-List") ||
+        currentPath.Contains("/Claim-List") ||
+        currentPath.Contains("/Stack-List");
+}
+
+<div class="submenu @(hasSubmenu ? "" : "none")" id="submenu">
+
+    @if (currentPath.Contains("/User-List") || currentPath.Contains("/Role-List") || currentPath.Contains("/Module-List") || currentPath.Contains("/Claim-List"))
+    {
+        <div class="submenu-header">
+            <span class="submenu-title">SUB-MENU</span>
+            <button class="submenu-close" onclick="document.getElementById('submenu').classList.add('none')">
+                &times;
+            </button>
+        </div>
+
+        <!-- Submenu Gestão de Utilizadores -->
+        <div class="submenu">
+            <a asp-controller="User" asp-action="Index" class="submenu-item @(currentPath.Contains("/User-List") ? "active" : "")">
+                <i class="fas fa-user"></i> Utilizadores
+            </a>
+            <a asp-controller="Role" asp-action="Index" class="submenu-item @(currentPath.Contains("/Role-List") ? "active" : "")">
+                <i class="fas fa-gears"></i> Perfis
+            </a>
+            <a asp-controller="Module" asp-action="Index" class="submenu-item @(currentPath.Contains("/Module-List") ? "active" : "")">
+                <i class="fas fa-cubes"></i> Módulos
+            </a>
+            <a asp-controller="Claim" asp-action="Index" class="submenu-item @(currentPath.Contains("/Claim-List") ? "active" : "")">
+                <i class="fas fa-handshake"></i> Declarações
+            </a>
+        </div>
+    }
+
+    @if (currentPath.Contains("/Stack-List"))
+    {
+
+        <div class="submenu-header">
+            <span class="submenu-title">SUB-MENU</span>
+            <button class="submenu-close" onclick="document.getElementById('submenu').classList.add('none')">
+                &times;
+            </button>
+        </div>
+
+        <!-- Submenu for Gestão de projetos -->
+        <div class="submenu">
+            <a asp-controller="Stack" asp-action="Index" class="submenu-item @(currentPath.Contains("/Stack-List") ? "active" : "")">
+                <i class="fas fa-diagram-project"></i> Stacks Técnologicas
+            </a>
+            <a asp-controller="Activity" asp-action="Index" class="submenu-item @(currentPath.Contains("/Activity-List") ? "active" : "")">
+                <i class="fas fa-list-ol"></i> Soluções Arquiteturais
+            </a>
+            <a asp-controller="ActivityType" asp-action="Index" class="submenu-item @(currentPath.Contains("/ActivityType-List") ? "active" : "")">
+                <i class="fas fa-ellipsis-vertical"></i> Padrões de Documentos
+            </a>
+
+        </div>
+    }
+
+    @if (currentPath.Contains("/Sprint-List") || currentPath.Contains("/Review-List") || currentPath.Contains("/ReviewStatus-List") || currentPath.Contains("/Retrospective-List") || currentPath.Contains("/RetrospectiveStatus-List") || currentPath.Contains("/Action-List") || currentPath.Contains("/ActionStatus-List"))
+    {
+
+        <div class="submenu-header">
+            <span class="submenu-title">SUB-MENU</span>
+            <button class="submenu-close" onclick="document.getElementById('submenu').classList.add('none')">
+                &times;
+            </button>
+        </div>
+
+        <!-- Submenu for Gestão de Processos -->
+        <div class="submenu">
+            <a asp-controller="Sprint" asp-action="Index" class="submenu-item @(currentPath.Contains("/Sprint-List") ? "active" : "")">
+                <i class="fa-solid fa-person-running"></i> Sprints
+            </a>
+            <a asp-controller="Review" asp-action="Index" class="submenu-item @(currentPath.Contains("/Review-List") ? "active" : "")">
+                <i class="fas fa-list-check"></i> Reviews
+            </a>
+            <a asp-controller="Retrospective" asp-action="Index" class="submenu-item @(currentPath.Contains("/Retrospective-List") ? "active" : "")">
+                <i class="fas fa-clock-rotate-left"></i> Retrospetivas
+            </a>
+
+        </div>
+    }
+
+    @if (currentPath.Contains("/Assessment-List") || currentPath.Contains("/AssessmentResult-List") || currentPath.Contains("/AssessmentStatus-List") || currentPath.Contains("/Kpi-List") || currentPath.Contains("/KpiRule-List") || currentPath.Contains("/Metric-List"))
+    {
+
+        <div class="submenu-header">
+            <span class="submenu-title">SUB-MENU</span>
+            <button class="submenu-close" onclick="document.getElementById('submenu').classList.add('none')">
+                &times;
+            </button>
+        </div>
+
+        <!-- Submenu for Gestão de Avaliações -->
+        <div class="submenu">
+            <a asp-controller="Assessment" asp-action="Index" class="submenu-item @(currentPath.Contains("/Assessment-List") ? "active" : "")">
+                <i class="fas fa-pen-ruler"></i> Avaliações
+            </a>
+            <a asp-controller="Metric" asp-action="Index" class="submenu-item @(currentPath.Contains("/Metric-List") ? "active" : "")">
+                <i class="fas fa-handshake"></i> Métricas
+            </a>
+
+        </div>
+    }
+
+
+</div>
+

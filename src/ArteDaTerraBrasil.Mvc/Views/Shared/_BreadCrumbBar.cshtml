@@ -1,0 +1,28 @@
+﻿@{
+    var currentPath = Context.Request.Path.ToString();
+}
+
+
+@if (!currentPath.Equals("/", StringComparison.OrdinalIgnoreCase))
+{
+    <div class="breadcrumb-bar">
+        <div class="container-fluid px-4 d-flex align-items-center" style="height: 48px;">
+            <span class="breadcrumb-title">
+                <i class="fa-solid fa-house me-1"></i> @ViewData["Section"]
+                @if (ViewData["Title"]?.ToString() != ViewData["Section"]?.ToString())
+                {
+                    <text> > </text> @ViewData["Title"]
+                }
+            </span>
+        </div>
+    </div>
+}
+
+else
+{
+    <div class="breadcrumb-bar">
+        <div class="container-fluid px-4 d-flex align-items-center" style="height: 48px;">
+            <span class="breadcrumb-title">@ViewData["Title"]</span>
+        </div>
+    </div>
+}

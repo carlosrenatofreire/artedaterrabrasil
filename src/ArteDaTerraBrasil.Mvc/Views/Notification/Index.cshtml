@@ -1,0 +1,87 @@
+﻿@using ArteDaTerraBrasil.Mvc.ViewModels.Shareds
+@using ArteDaTerraBrasil.Mvc.ViewModels.Shareds
+@model IEnumerable<AuditLogViewModel>
+
+@{
+    ViewData["Title"] = "Notificações";
+}
+
+<!-- Keep only external plugin styles that are NOT part of your local wwwroot -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css" rel="stylesheet" />
+<link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet" />
+<link href="https://cdn.datatables.net/2.2.2/css/dataTables.bootstrap5.css" rel="stylesheet" />
+<link href="~/css/site.css" rel="stylesheet" />
+
+<partial name="_NotificationList" />
+
+@section Scripts {
+    <!-- jQuery and plugin dependencies -->
+    <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+    <script src="https://cdn.datatables.net/2.2.2/js/dataTables.js"></script>
+    <script src="https://cdn.datatables.net/2.2.2/js/dataTables.bootstrap5.js"></script>
+
+    <!-- Bootstrap Datepicker -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
+
+    <!-- FontAwesome -->
+    <script src="https://kit.fontawesome.com/a076d05399.js"></script>
+
+    <!-- Toastr -->
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+            toastr.options = {
+            positionClass: 'toast-top-right', // Posição no canto superior direito
+            preventDuplicates: true, // Evita mensagens duplicadas
+            closeButton: true, // Botão para fechar manualmente
+            progressBar: true, // Barra de progresso para o tempo de exibição
+            timeOut: 5000, // Tempo para desaparecer (em milissegundos)
+            extendedTimeOut: 3000, // Tempo adicional ao passar o mouse
+            showDuration: 300, // Velocidade da animação ao exibir
+            hideDuration: 300, // Velocidade da animação ao esconder
+        }
+
+        $(document).ready(function () {
+
+            var baseUrl = '@Url.Content("~")';
+
+            function openModal(modalId, url, data = {}) {
+                var modal = new bootstrap.Modal(document.getElementById(modalId)); // Initialize the modal
+                $.ajax({
+                    url: url,
+                    type: 'GET',
+                    data: data, // You can pass additional data if needed
+                    success: function (response) {
+                        $('#' + modalId).find('.modal-body').html(response); // Populate the modal body with content
+                        modal.show(); // Show the modal after content is loaded
+                    },
+                    error: function () {
+                        Swal.fire({
+                            allowOutsideClick: false,
+                            icon: 'error',
+                            text: 'Erro ao carregar os dados.'
+                        });
+                    }
+                });
+            }
+
+            // Open Details Modal
+            $(document).on('click', '[data-bs-toggle="modal"][data-bs-target="#detailsModal"]', function () {
+                var id = $(this).data('id'); // Get the ID from data-id attribute
+                openModal('detailsModal', baseUrl + '/Audit-Details/' + id); // Load new content
+            });
+
+            //Fechar modal direito
+            document.addEventListener('hidden.bs.modal', function (event) {
+                $('.modal-backdrop').remove();
+                $('body').removeClass('modal-open').css('padding-right', '0');
+            });
+
+        }); // Fim document ready
+
+    </script>
+
+}

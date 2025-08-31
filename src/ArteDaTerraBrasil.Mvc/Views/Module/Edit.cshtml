@@ -1,0 +1,43 @@
+﻿@using ArteDaTerraBrasil.Mvc.ViewModels.Parameters
+@model ModuleViewModel
+
+@{
+    ViewData["Title"] = "Editar Módulo";
+    Layout = null;
+}
+
+<input type="hidden" asp-for="Id" />
+<form id="EditForm" enctype="multipart/form-data">
+    <div class="row">
+        <!-- Name Field -->
+            <div class="mb-3">
+                <label asp-for="Name" class="form-label"></label>
+                <input asp-for="Name" class="form-control" />
+                <div class="invalid-feedback">
+                    <span asp-validation-for="Name"></span>
+                </div>
+            </div>
+      
+
+        <!-- Description Field -->
+        <div class="mb-3">
+            <label asp-for="Description" class="form-label"></label>
+            <textarea asp-for="Description" class="form-control" rows="3"></textarea>
+            <div class="invalid-feedback">
+                <span asp-validation-for="Description"></span>
+            </div>
+        </div>
+
+        <input type="hidden" asp-for="Activated" />
+        <input type="hidden" asp-for="Tag" />
+
+    </div>
+</form>
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+}

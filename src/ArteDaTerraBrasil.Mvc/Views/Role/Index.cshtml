@@ -1,0 +1,491 @@
+﻿@using ArteDaTerraBrasil.Mvc.ViewModels.Parameters
+@model IEnumerable<RoleViewModel>
+
+@{
+    ViewData["Title"] = "Perfis";
+    ViewData["Section"] = "Gestão de Utilizadores";
+}
+
+<!-- Keep only external plugin styles that are NOT part of your local wwwroot -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css" rel="stylesheet" />
+<link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet" />
+<link href="https://cdn.datatables.net/2.2.2/css/dataTables.bootstrap5.css" rel="stylesheet" />
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<link href="~/css/site.css" rel="stylesheet" />
+
+<p supress-by-module-tag="role" supress-by-claim-tag="adicionar">
+    <a class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#createModal" data-action="open-create-role"><i class="fa fa-plus"></i> Adicionar</a>
+</p>
+
+<partial supress-by-module-tag="role" supress-by-claim-tag="ver" name="_RoleList" />
+<partial name="_ModalCreate" />
+<partial name="~/Views/Permission/_ModalCreatePermission.cshtml" />
+<partial name="_ModalDetails" />
+<partial name="_ModalEdit" />
+
+
+@section Scripts {
+    <!-- jQuery and plugin dependencies -->
+    <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+    <script src="https://cdn.datatables.net/2.2.2/js/dataTables.js"></script>
+    <script src="https://cdn.datatables.net/2.2.2/js/dataTables.bootstrap5.js"></script>
+
+    <!-- Bootstrap Datepicker -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
+
+    <!-- FontAwesome -->
+    <script src="https://kit.fontawesome.com/a076d05399.js"></script>
+
+    <!-- Toastr -->
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <!--Select 2-->
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+    <style>
+        #toast-container > .toast {
+            white-space: nowrap;
+            max-width: none;
+            width: auto;
+            word-wrap: normal;
+        }
+    </style>
+
+    <script>
+
+            toastr.options = {
+            positionClass: 'toast-top-right', // Posição no canto superior direito
+            preventDuplicates: true, // Evita mensagens duplicadas
+            closeButton: true, // Botão para fechar manualmente
+            progressBar: true, // Barra de progresso para o tempo de exibição
+            timeOut: 2000, // Tempo para desaparecer (em milissegundos)
+            extendedTimeOut: 3000, // Tempo adicional ao passar o mouse
+            showDuration: 300, // Velocidade da animação ao exibir
+            hideDuration: 300, // Velocidade da animação ao esconder
+        }
+
+        $(document).ready(function () {
+
+            var baseUrl = "@Url.Content("~")";
+
+            //Mostrar Toast no page reload com status e mensagem
+            var urlParams = new URLSearchParams(window.location.search);
+            var status = urlParams.get('status');
+            var message = urlParams.get('message');
+
+            if (status && message) {
+                if (status === 'success') {
+                    toastr.success(decodeURIComponent(message));
+                } else if (status === 'error') {
+                    toastr.error(decodeURIComponent(message));
+                }
+            }
+            //Apagar status e mensagem do url
+            window.history.replaceState({}, document.title, window.location.pathname);
+
+
+            //Configurações DataTable Js
+            let savedPageLength = localStorage.getItem('datatable_page_length') || 10;
+
+            $('#Table').DataTable({
+                "paging": true,
+                "pageLength": parseInt(savedPageLength),
+                "lengthChange": true,
+                "searching": true,
+                "ordering": true,
+                "info": true,
+                "autoWidth": true,
+                "responsive": true,
+                "language": {
+                    "search": "Pesquisar:",
+                    "paginate": {
+                        "previous": "Anterior",
+                        "next": "Próximo"
+                    },
+                    "lengthMenu": "Mostrar _MENU_ registros por página",
+                    "zeroRecords": "Nenhum registro encontrado",
+                    "info": "Mostrando _START_ a _END_ de _TOTAL_ registros",
+                    "infoEmpty": "Nenhum registro disponível",
+                    "infoFiltered": "(filtrado de _MAX_ registros no total)"
+                },
+                "columnDefs": [
+                    { "orderable": false, "targets": -1 } // Desabilita a ordenação para a última coluna
+                ],
+                "lengthMenu": [[5, 10, 25, 50, -1], [5, 10, 25, 50, "Todos"]],
+                }).on('length.dt', function (e, settings, len) {
+                    localStorage.setItem('datatable_page_length', len);
+            });
+
+            function openModal(modalId, url, data, callback) {
+
+                const $modalEl = $('#' + modalId);
+                const bsModal = new bootstrap.Modal($modalEl[0]);
+
+                $.get(url, data).done(function (html) {
+                    $modalEl.find('.modal-body').html(html);
+
+                    if (typeof callback === "function") {
+                        callback();
+                    }
+
+                    bsModal.show();
+                }).fail(function () {
+                            var status = encodeURIComponent('error');
+                            var message = encodeURIComponent("Erro ao carregar dados!");
+                            window.location.href = window.location.pathname + '?status=' + status + '&message=' + message;
+                });
+            }
+
+             //Fechar modal direito
+            document.addEventListener('hidden.bs.modal', function (event) {
+                $('.modal-backdrop').remove();
+                $('body').removeClass('modal-open').css('padding-right', '0');
+            });
+
+            // Open Create Modal
+            $('a[data-bs-toggle="modal"][data-bs-target="#createModal"]').on('click', function () {
+                openModal('createModal', baseUrl + '/Role-Create/',{}, function () {
+                    initializeDropdowns();
+                }); // Adjust URL as needed
+            });
+
+            // Open Details Modal
+            $(document).on('click', '[data-bs-toggle="modal"][data-bs-target="#detailsModal"]', function () {
+                var id = $(this).data('id'); // Get the ID from data-id attribute
+                openModal('detailsModal', baseUrl + '/Role-Details/' + id); // Load new content
+            });
+
+            // Open Edit Modal
+            $(document).on('click', '[data-bs-toggle="modal"][data-bs-target="#editModal"]', function () {
+
+                id = $(this).data('id');
+
+                openModal('editModal', baseUrl + '/Role-Edit/' + id, {}, function () {
+
+                   const departmentId = $('#departmentSelect').val();
+                   const AreaId = $('#areaSelect').val();
+                   const TeamId = $('#teamSelect').val();
+
+
+                    if (departmentId) {
+                        // Fetch areas for the selected department
+                        $.getJSON(baseUrl + '/Role/getAreas', { departmentId: departmentId }, function (data) {
+                            $('#areaSelect').empty().append('<option value="">Selecione</option>');
+                            $.each(data, function (i, area) {
+                                $('#areaSelect').append(`<option value="${area.id}" ${area.id == AreaId ? 'selected' : ''}>${area.name}</option>`);
+                            });
+                            $('#areaSelect').prop('disabled', false);
+                        });
+                    }
+
+                    if (AreaId) {
+                        $.getJSON(baseUrl + '/Role/getTeams', { areaId: AreaId }, function (data) {
+                            $('#teamSelect').empty().append('<option value="">Selecione</option>'); // Ensure the default option is added first
+
+                            $.each(data, function (i, team) {
+                                // Append each team option and mark the one matching TeamId as selected
+                                $('#teamSelect').append(`<option value="${team.id}" ${team.id == TeamId ? 'selected' : ''}>${team.name}</option>`);
+                            });
+
+                            // Enable the team select dropdown
+                            $('#teamSelect').prop('disabled', false);
+                        });
+                    }
+
+                    // Initialize cascading behavior for dynamic updates
+                    initializeDropdowns();
+                });
+            });
+
+            // Open Permission Modal
+            $(document).on('click', '[data-bs-toggle="modal"][data-action="open-permissions"]', function () {
+                const id = $(this).data('id');
+                openModal('createPermissionModal', baseUrl + '/Permission-Edit/' + id);
+
+                $('#createPermissionModal').on('shown.bs.modal', function () {
+                    const selectAllCheckbox = document.getElementById('select_all');
+                    const allClaimsCheckboxes = document.querySelectorAll('.claim-checkbox');
+
+                    // Add event listener to the "Select All" checkbox
+                    if (selectAllCheckbox) {
+                        selectAllCheckbox.addEventListener('change', function () {
+                            allClaimsCheckboxes.forEach(checkbox => {
+                                checkbox.checked = this.checked;
+                            });
+                        });
+                    }
+                });
+            });
+
+            // Save Create Modal Data
+            $('#createSaveButton').on('click', function () {
+                var formData = $('#CreateForm').serialize(); // Serialize the form data
+                $.ajax({
+                    url: baseUrl + '/Role-Create/', // Adjust URL for creating
+                    type: 'POST',
+                    data: formData,
+                    success: function (response) {
+                        if (response.success) {
+                            var status = encodeURIComponent('success');
+                            var message = encodeURIComponent(response.message);
+                            window.location.href = window.location.pathname + '?status=' + status + '&message=' + message;
+                        } else {
+                            toastr.error(response.errors);
+                        }
+                    },
+                    error: function () {
+                        toastr.error('Erro ao salvar dados.');
+                    }
+                });
+            });
+
+            $('#createPermissionsSaveButton').on('click', function () {
+                var formData =  $('#PermissionsForm').serialize();
+                var roleId = $('#roleId').val();
+
+                            $.ajax({
+                    url: baseUrl + '/Permission-Edit/' + roleId,
+                    type: 'POST',
+                    data: formData,
+                    success: function (response) {
+                        if (response.success) {
+                            var status = encodeURIComponent('success');
+                            var message = encodeURIComponent(response.message);
+                            window.location.href = window.location.pathname + '?status=' + status + '&message=' + message;
+                        } else {
+                            toastr.error(response.error);
+                        }
+                    },
+                    error: function () {
+                        toastr.error('Erro ao salvar dados.');
+                    }
+                });
+            });
+
+            // Save Edit Modal Data
+            $('#editSaveButton').on('click', function () {
+
+                var id = $('#Id').val(); // Retrieve the Id from the hidden input
+                var formData = $('#EditForm').serialize(); // Serialize the form data
+
+                if (!id) {
+                    toastr.error('ID não encontrado para edição.');
+                    return;
+                }
+
+                $.ajax({
+                    url: baseUrl + '/Role-Edit/'+id, // Adjust URL for editing
+                    type: 'POST',
+                    data: formData,
+                    success: function (response) {
+                        if (response.success) {
+                            var status = encodeURIComponent('success');
+                            var message = encodeURIComponent(response.message);
+                            window.location.href = window.location.pathname + '?status=' + status + '&message=' + message;
+                        } else {
+                            toastr.error(response.errors);
+                        }
+                    },
+                    error: function () {
+                        toastr.error('Erro ao salvar dados.');
+                    }
+                });
+            });
+
+
+
+            $(document).on('click', '[data-bs-target="#delete"]', function () {
+                    var button = $(this);
+                    var id = button.data('id');
+                    var name = button.data('name');
+
+                    Swal.fire({
+                        title: 'Tem certeza que deseja excluir?',
+                           text: `Perfil: ${name}`,
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: 'Sim',
+                        cancelButtonText: 'Não',
+                        allowOutsideClick: false
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            Swal.fire({
+                                title: 'Aguarde...',
+                                text: 'Processando sua solicitação de exclusão.',
+                                allowOutsideClick: false,
+                                didOpen: () => {
+                                    Swal.showLoading();
+                                }
+                            });
+
+                            $.ajax({
+                                url: baseUrl + '/Role-Remove/' + id, // Endpoint de exclusão
+                                type: 'POST',
+                                data: {
+                                    __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val()
+                                },
+                                success: function (response) {
+                                    if (response.success) {
+
+                                        toastr.success(response.message);
+
+                                        setTimeout(function () { location.reload(); }, 1000);
+
+                                    } else {
+
+                                        if (Array.isArray(response.errors)) {
+                                            response.errors.forEach(function (error) { toastr.error(error); });
+                                        } else if (typeof response.errors === 'string') {
+                                            toastr.error(response.errors);
+                                        } else {
+                                            toastr.error('Não foi possivel obter o erro do backend!');
+                                        }
+                                    }
+                                    Swal.close(); // Fecha o modal de loading
+
+                                },
+                                error: function () {
+                                Swal.close(); // Fecha o modal de loading
+                                toastr.error('Ocorreu um erro ao submeter sua solicitação para URL! ');
+
+                                setTimeout(function () { Swal.close(); }, 1000);
+
+                                }
+                            });
+                        }
+                    });
+            }); // Fim Remove (.btn-danger)
+
+            $(document).on('click', '[data-bs-target="#activate"]', function () {
+                var button = $(this);
+                var id = button.data('id');
+                var name = button.data('name');
+
+                Swal.fire({
+                    title: 'Tem certeza que deseja reativar?',
+                    text: `Perfil: ${name}`,
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Sim',
+                    cancelButtonText: 'Não',
+                    allowOutsideClick: false
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        Swal.fire({
+                            title: 'Aguarde...',
+                            text: 'Processando sua solicitação de exclusão.',
+                            allowOutsideClick: false,
+                            didOpen: () => {
+                                Swal.showLoading();
+                            }
+                        });
+
+                        $.ajax({
+                            url: baseUrl + '/Role-Activate/' + id, // Endpoint de exclusão
+                            type: 'POST',
+                            data: {
+                                __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val()
+                            },
+                            success: function (response) {
+                                if (response.success) {
+
+                                    toastr.success(response.message);
+
+                                    setTimeout(function () { location.reload(); }, 1000);
+
+                                } else {
+
+                                    if (Array.isArray(response.errors)) {
+                                        response.errors.forEach(function (error) { toastr.error(error); });
+                                    } else if (typeof response.errors === 'string') {
+                                        toastr.error(response.errors);
+                                    } else {
+                                        toastr.error('Não foi possivel obter o erro do backend!');
+                                    }
+                                }
+                                Swal.close(); // Fecha o modal de loading
+
+                            },
+                            error: function () {
+                            Swal.close(); // Fecha o modal de loading
+                            toastr.error('Ocorreu um erro ao submeter sua solicitação para URL! ');
+
+                            setTimeout(function () { Swal.close(); }, 1000);
+
+                            }
+                        });
+                    }
+                });
+            }); // Fim Remove (.btn-danger)
+
+            // Initialize cascading dropdowns logic
+            function initializeDropdowns(preselectedAreaId = null, preselectedTeamId = null) {
+                $('#departmentSelect').off('change').on('change', function () {
+                    const departmentId = $(this).val();
+                    if (departmentId) {
+                        $('#areaSelect').prop('disabled', true).empty().append('<option value="">Selecione</option>');
+                        $('#teamSelect').prop('disabled', true).empty().append('<option value="">Selecione</option>');
+
+                        // Fetch areas for the selected department
+                        $.getJSON(baseUrl + '/Role/getAreas', { departmentId: departmentId }, function (data) {
+                            $('#areaSelect').empty().append('<option value="">Selecione</option>');
+                            $.each(data, function (i, area) {
+                                $('#areaSelect').append(`<option value="${area.id}" ${area.id == preselectedAreaId ? 'selected' : ''}>${area.name}</option>`);
+                            });
+
+                            // Enable the area dropdown
+                            $('#areaSelect').prop('disabled', false);
+
+                            // Trigger the change event if a preselectedAreaId is provided
+                            if (preselectedAreaId) {
+                                $('#areaSelect').val(preselectedAreaId).trigger('change');
+                            }
+                        }).fail(function () {
+                            toastr.error('Erro ao carregar áreas!');
+                        });
+                    } else {
+                        // Reset both area and team dropdowns
+                        $('#areaSelect').prop('disabled', true).empty().append('<option value="">Selecione</option>');
+                        $('#teamSelect').prop('disabled', true).empty().append('<option value="">Selecione</option>');
+                    }
+                });
+
+                $('#areaSelect').off('change').on('change', function () {
+                    const areaId = $(this).val();
+                    if (areaId) {
+                        $('#teamSelect').prop('disabled', true).empty().append('<option value="">Selecione</option>');
+
+                        // Fetch teams for the selected area
+                        $.getJSON(baseUrl + '/Role/getTeams', { areaId: areaId }, function (data) {
+                            $('#teamSelect').empty().append('<option value="">Selecione</option>');
+                            $.each(data, function (i, team) {
+                                $('#teamSelect').append(`<option value="${team.id}" ${team.id == preselectedTeamId ? 'selected' : ''}>${team.name}</option>`);
+                            });
+
+                            // Enable the team dropdown
+                            $('#teamSelect').prop('disabled', false);
+
+                            // Set the preselected team if provided
+                            if (preselectedTeamId) {
+                                $('#teamSelect').val(preselectedTeamId);
+                            }
+                        }).fail(function () {
+                            toastr.error('Erro ao carregar equipas!');
+                        });
+                    } else {
+                        // Reset the team dropdown
+                        $('#teamSelect').prop('disabled', true).empty().append('<option value="">Selecione</option>');
+                    }
+                });
+            }
+        }); // Fim document ready
+    </script>
+}

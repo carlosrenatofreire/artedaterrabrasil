@@ -1,0 +1,110 @@
+﻿@using ArteDaTerraBrasil.Mvc.ViewModels.Parameters
+@model RoleViewModel
+
+@{
+    ViewData["Title"] = "Novo Perfil";
+    Layout = null;
+}
+
+<div class="container">
+    <form id="CreateForm" enctype="multipart/form-data">
+        <div class="row">
+            <!-- Name Field -->
+          
+                <div class="mb-3">
+                    <label asp-for="Name" class="form-label"></label>
+                    <input asp-for="Name" class="form-control" />
+                    <div class="invalid-feedback">
+                        <span asp-validation-for="Name"></span>
+                    </div>
+                </div>
+           
+
+            <!-- Description Field -->
+            <div class="mb-3">
+                <label asp-for="Description" class="form-label"></label>
+                <textarea asp-for="Description" class="form-control" rows="3"></textarea>
+                <div class="invalid-feedback">
+                    <span asp-validation-for="Description"></span>
+                </div>
+            </div>
+
+            <!-- Tag Field -->
+            <div class="col-md-12">
+                <div class="mb-3">
+                    <label asp-for="Tag" class="form-label"></label>
+                    <input asp-for="Tag" class="form-control" />
+                    <div class="invalid-feedback">
+                        <span asp-validation-for="Tag"></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Department Field -->
+@*             <div class="col-md-6">
+                <div class="mb-3">
+                    <label asp-for="DepartmentId" class="form-label">Departamento</label>
+                    @if (Model.DepartmentSelect.Any())
+                    {
+                        <select asp-for="DepartmentId" id="departmentSelect" class="form-select" asp-items="@(new SelectList(Model.DepartmentSelect, "Id", "Name"))">
+                            <option value="">Selecione</option>
+                        </select>
+                    }
+                    else
+                    {
+                        <p class="text-danger">Não existem departamentos!</p>
+                    }
+                    <span asp-validation-for="DepartmentId" class="text-danger"></span>
+                </div>
+            </div> *@
+
+            <!-- Supervisor Field -->
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <label asp-for="SupervisorId" class="form-label">Supervisor</label>
+                    @if (Model.SupervisorSelect.Any())
+                    {
+                        <select asp-for="SupervisorId" class="form-select" asp-items="@(new SelectList(Model.SupervisorSelect, "Id", "Name"))">
+                            <option value="">Selecione</option>
+                        </select>
+                    }
+                    else
+                    {
+                        <p class="text-danger">Não existem utilizadores desse departamentos!</p>
+                    }
+                    <span asp-validation-for="SupervisorId" class="text-danger"></span>
+                </div>
+            </div>
+
+            <!-- Area Field -->
+@*             <div class="col-md-6">
+                <div class="mb-3">
+                    <label asp-for="AreaId" class="form-label">Área</label>
+                    <select asp-for="AreaId" id="areaSelect" class="form-select" disabled>
+                        <option value="">Selecione</option>
+                    </select>
+                    <span asp-validation-for="AreaId" class="text-danger"></span>
+                </div>
+            </div>
+
+            <!-- Team Field -->
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <label asp-for="TeamId" class="form-label">Equipa</label>
+                    <select asp-for="TeamId" id="teamSelect" class="form-select" disabled>
+                        <option value="">Selecione</option>
+                    </select>
+                    <span asp-validation-for="TeamId" class="text-danger"></span>
+                </div>
+            </div> *@
+
+
+            <input type="checkbox" asp-for="Activated" class="form-check-input" checked hidden />
+    </form>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

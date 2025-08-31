@@ -1,0 +1,25 @@
+﻿@{
+    var currentPath = Context.Request.Path.ToString();
+}
+
+
+<div class="sidebar">
+    <a asp-controller="Home" asp-action="Index" class="sidebar-item @(currentPath == "/Dashboard" ? "active" : "")">
+        <i class="fa-solid fa-gauge-high"></i> <span>Dashboard</span>
+    </a>
+    <a asp-controller="User" asp-action="Index" class="sidebar-item @(currentPath.Contains("/User-List") || currentPath.Contains("/Role-List") || currentPath.Contains("/Module-List") || currentPath.Contains("/Claim-List") ? "active" : "")">
+        <i class="fas fa-users"></i> <span>Utilizadores</span>
+    </a>
+    <a asp-controller="Stack" asp-action="Index" class="sidebar-item @(currentPath.Contains("/Stack-List") || currentPath.Contains("/ProjectType-List") || currentPath.Contains("/Activity-List") || currentPath.Contains("/ActivityType-List") || currentPath.Contains("/ActivityStatus-List") ? "active" : "")">
+        <i class="fas fa-drafting-compass"></i> <span>Padrões</span>
+    </a>
+    <a asp-controller="Sprint" asp-action="Index" class="sidebar-item @(currentPath.Contains("/Sprint-List") || currentPath.Contains("/Review-List") || currentPath.Contains("/ReviewStatus-List") || currentPath.Contains("/Retrospective-List") || currentPath.Contains("/RetrospectiveStatus-List") || currentPath.Contains("/Action-List") || currentPath.Contains("/ActionStatus-List") ? "active" : "")">
+        <i class="fas fa-star"></i> <span>Qualidade</span>
+    </a>
+    <a asp-controller="Assessment" asp-action="Index" class="sidebar-item @(currentPath.Contains("/Assessment-List") || currentPath.Contains("/AssessmentResult-List") || currentPath.Contains("/AssessmentStatus-List") || currentPath.Contains("/Kpi-List") || currentPath.Contains("/KpiRule-List") || currentPath.Contains("/Metric-List") ? "active" : "")">
+        <i class="fab fa-product-hunt"></i> <span>Portefólio</span>
+    </a>
+    <a asp-controller="AuditLog" asp-action="Index" class="sidebar-item @(currentPath.Contains("/Audit-List") ? "active" : "")">
+        <i class="fas fa-message"></i> <span>Auditoria</span>
+    </a>
+</div>
